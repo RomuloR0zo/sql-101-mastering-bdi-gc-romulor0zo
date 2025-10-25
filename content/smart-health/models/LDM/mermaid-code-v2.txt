@@ -1,0 +1,216 @@
+erDiagram
+
+  patient {
+    uuid patient_id PK
+    string first_name
+    string middle_name
+    string last_name
+    string second_last_name
+    date birth_date
+    string gender
+    string email
+    timestamp registration_date
+    boolean is_active
+  }
+
+  patient_contact {
+    uuid contact_id PK
+    uuid patient_id FK
+    string name
+    string relationship
+    string phone
+    string email
+    string instructions
+  }
+
+  patient_identity {
+    uuid patient_id FK
+    int document_type_id FK
+    string document_number
+    string issuing_country
+    date issue_date
+  }
+
+  patient_address {
+    uuid patient_id FK
+    string address_type
+    string department
+    string municipality
+    string address
+    float latitude
+    float longitude
+    string postal_code
+  }
+
+  patient_phone {
+    uuid patient_id FK
+    string phone_type
+    string number
+    boolean is_primary
+  }
+
+  doctor {
+    uuid doctor_id PK
+    string internal_code
+    string license_number
+    string first_name
+    string last_name
+    string professional_email
+    date join_date
+    boolean is_active
+  }
+
+  doctor_specialty {
+    uuid doctor_id FK
+    int specialty_id FK
+  }
+
+  doctor_schedule {
+    uuid doctor_id FK
+    string day_of_week
+    time start_time
+    time end_time
+    string modality
+  }
+
+  appointment {
+    uuid appointment_id PK
+    uuid patient_id FK
+    uuid doctor_id FK
+    date appointment_date
+    time start_time
+    time end_time
+    string type
+    string status
+    int room_id FK
+    string reason
+    uuid created_by FK
+    timestamp created_at
+  }
+
+  medical_record {
+    uuid record_id PK
+    uuid patient_id FK
+    timestamp record_timestamp
+    string record_type
+    text summary
+    jsonb structured_data
+    uuid doctor_id FK
+    int main_diagnosis_id FK
+  }
+
+  diagnosis_catalog {
+    int diagnosis_id PK
+    string cie_code
+    string description
+  }
+
+  medication_catalog {
+    int medication_id PK
+    string atc_code
+    string trade_name
+    string active_ingredient
+    string presentation
+  }
+
+  prescription {
+    uuid prescription_id PK
+    uuid record_id FK
+    int medication_id FK
+    string dose
+    string frequency
+    string duration
+  }
+
+  vital_sign {
+    uuid vital_sign_id PK
+    uuid record_id FK
+    string type
+    string value
+    string unit
+    timestamp measured_at
+  }
+
+  insurance {
+    int insurance_id PK
+    string name
+    string contact_info
+  }
+
+  policy {
+    uuid policy_id PK
+    uuid patient_id FK
+    int insurance_id FK
+    string policy_number
+    string coverage_summary
+    date start_date
+    date end_date
+    string status
+  }
+
+  audit_log {
+    uuid log_id PK
+    uuid user_id FK
+    string role
+    string entity
+    string entity_id
+    string action
+    jsonb details
+    timestamp event_timestamp
+    string ip_address
+    string application
+  }
+
+  user_account {
+    uuid user_id PK
+    string username
+    string email
+    string role
+    boolean mfa_enabled
+  }
+
+  room {
+    int room_id PK
+    string name
+    string location
+    int capacity
+  }
+
+  specialty_catalog {
+    int specialty_id PK
+    string name
+  }
+
+  document_type_catalog {
+    int document_type_id PK
+    string name
+  }
+
+  %% Relationships
+  patient ||--o{ patient_identity : has
+  patient ||--o{ patient_address : has
+  patient ||--o{ patient_phone : has
+  patient ||--o{ patient_contact : has
+  patient ||--o{ appointment : books
+  patient ||--o{ medical_record : owns
+  patient ||--o{ policy : covered_by
+
+  doctor ||--o{ appointment : attends
+  doctor ||--o{ doctor_specialty : has
+  doctor ||--o{ doctor_schedule : has
+  doctor ||--o{ medical_record : signs
+
+  appointment ||--|| room : held_in
+  appointment ||--|| user_account : created_by
+
+  medical_record ||--o{ prescription : includes
+  medical_record ||--o{ vital_sign : includes
+  medical_record ||--|| diagnosis_catalog : main_diagnosis
+
+  prescription ||--|| medication_catalog : medication
+  policy ||--|| insurance : provided_by
+
+  audit_log ||--|| user_account : done_by
+
+  doctor_specialty ||--|| specialty_catalog : references
+  patient_identity ||--|| document_type_catalog : references
