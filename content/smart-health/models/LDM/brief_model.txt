@@ -1,0 +1,116 @@
+🧾 Brief del Modelo Relacional — Smart Health System
+Total de Tablas: 20
+🧍‍♂️ Módulo de Pacientes (6 tablas)
+
+1. PATIENT
+Tabla principal de pacientes del sistema.
+PK: patient_id
+Campos clave: nombre, fecha de nacimiento, género, email, estado, fecha de registro.
+
+2. PATIENT_CONTACT
+Contactos de emergencia o asociados al paciente.
+PK: contact_id
+FK: patient_id
+Campos clave: nombre, relación, teléfono, email, instrucciones.
+
+3. PATIENT_IDENTITY
+Identificación oficial del paciente.
+FK: patient_id, document_type_id
+Campos clave: tipo y número de documento, país de emisión, fecha de emisión.
+
+4. PATIENT_ADDRESS
+Direcciones asociadas al paciente.
+FK: patient_id
+Campos clave: tipo de dirección, departamento, municipio, dirección, coordenadas, código postal.
+
+5. PATIENT_PHONE
+Teléfonos asociados al paciente.
+FK: patient_id
+Campos clave: tipo de teléfono, número, principal o secundario.
+
+6. POLICY
+Pólizas de seguro que cubren al paciente.
+PK: policy_id
+FK: patient_id, insurance_id
+Campos clave: número de póliza, resumen de cobertura, fechas, estado.
+
+Módulo de Profesionales (3 tablas)
+
+7. DOCTOR
+Información de médicos registrados.
+PK: doctor_id
+Campos clave: código interno, número de licencia, nombres, correo profesional, fecha de ingreso, estado.
+
+8. DOCTOR_SPECIALTY
+Relación entre médico y su especialidad.
+FK: doctor_id, specialty_id
+
+9. DOCTOR_SCHEDULE
+Disponibilidad horaria del médico.
+FK: doctor_id
+Campos clave: día de la semana, hora inicio, hora fin, modalidad (presencial o virtual).
+
+Módulo de Atención (6 tablas)
+
+10. APPOINTMENT
+Registra citas entre pacientes y doctores.
+PK: appointment_id
+FK: patient_id, doctor_id, room_id, created_by
+Campos clave: fecha, hora, tipo, estado, motivo.
+
+11. ROOM
+Salas o consultorios donde se realizan las citas.
+PK: room_id
+Campos clave: nombre, ubicación, capacidad.
+
+12. MEDICAL_RECORD
+Historia clínica del paciente.
+PK: record_id
+FK: patient_id, doctor_id, main_diagnosis_id
+Campos clave: tipo de registro, resumen, datos estructurados, timestamp.
+
+13. PRESCRIPTION
+Prescripciones médicas generadas en los registros clínicos.
+PK: prescription_id
+FK: record_id, medication_id
+Campos clave: dosis, frecuencia, duración.
+
+14. VITAL_SIGN
+Signos vitales registrados en una historia clínica.
+PK: vital_sign_id
+FK: record_id
+Campos clave: tipo, valor, unidad, fecha/hora de medición.
+
+15. RECORD_DIAGNOSIS (implícita en relaciones)
+Relación de diagnósticos dentro de un registro médico.
+FK: medical_record_id, diagnosis_id
+Campos clave: tipo de diagnóstico, notas adicionales.
+
+Módulo de Catálogos (4 tablas)
+
+16. DOCUMENT_TYPE_CATALOG
+Catálogo de tipos de documentos de identidad.
+PK: document_type_id
+Campos clave: nombre del tipo de documento.
+
+17. SPECIALTY_CATALOG
+Catálogo de especialidades médicas.
+PK: specialty_id
+Campos clave: nombre de la especialidad.
+
+18. DIAGNOSIS_CATALOG
+Catálogo de diagnósticos basados en CIE-10.
+PK: diagnosis_id
+Campos clave: código CIE, descripción.
+
+19. MEDICATION_CATALOG
+Catálogo de medicamentos disponibles.
+PK: medication_id
+Campos clave: código ATC, nombre comercial, principio activo, presentación.
+
+Módulo de Auditoría y Seguridad (2 tablas)
+
+20. USER_ACCOUNT
+Usuarios del sistema con permisos y roles.
+PK: user_id
+Campos clave: nombre de usuario, correo, rol, MFA habilitado.
