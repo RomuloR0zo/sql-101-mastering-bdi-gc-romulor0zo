@@ -1,0 +1,205 @@
+-- 04. Create Schema
+CREATE SCHEMA IF NOT EXISTS smart_health AUTHORIZATION sm_admin;
+
+-- 05. Comment on database
+COMMENT ON DATABASE smarthdb IS 'Base de datos para el control de pacientes y citas';
+
+-- 06. Comment on schema
+COMMENT ON SCHEMA smart_health IS 'Esquema principal para el sistema de control de pacientes y citas';
+
+-- =====================================================
+-- TABLAS DE CATÁLOGOS
+-- =====================================================
+
+CREATE TABLE smart_health.document_type_catalog (
+    document_type_id INT PRIMARY KEY,
+    name VARCHAR(100)
+);
+
+CREATE TABLE smart_health.specialty_catalog (
+    specialty_id INT PRIMARY KEY,
+    name VARCHAR(100)
+);
+
+CREATE TABLE smart_health.diagnosis_catalog (
+    diagnosis_id INT PRIMARY KEY,
+    cie_code VARCHAR(20),
+    description VARCHAR(255)
+);
+
+CREATE TABLE smart_health.medication_catalog (
+    medication_id INT PRIMARY KEY,
+    atc_code VARCHAR(20),
+    trade_name VARCHAR(100),
+    active_ingredient VARCHAR(100),
+    presentation VARCHAR(100)
+);
+
+CREATE TABLE smart_health.insurance (
+    insurance_id INT PRIMARY KEY,
+    name VARCHAR(100),
+    contact_info VARCHAR(255)
+);
+
+CREATE TABLE smart_health.room (
+    room_id INT PRIMARY KEY,
+    name VARCHAR(100),
+    location VARCHAR(255),
+    capacity INT
+);
+
+CREATE TABLE smart_health.user_account (
+    user_id UUID PRIMARY KEY,
+    username VARCHAR(100),
+    email VARCHAR(150),
+    role VARCHAR(50),
+    mfa_enabled BOOLEAN
+);
+
+-- =====================================================
+-- TABLAS PRINCIPALES
+-- =====================================================
+
+CREATE TABLE smart_health.patient (
+    patient_id UUID PRIMARY KEY,
+    first_name VARCHAR(100),
+    middle_name VARCHAR(100),
+    last_name VARCHAR(100),
+    second_last_name VARCHAR(100),
+    birth_date DATE,
+    gender VARCHAR(20),
+    email VARCHAR(150),
+    registration_date TIMESTAMP,
+    is_active BOOLEAN
+);
+
+CREATE TABLE smart_health.doctor (
+    doctor_id UUID PRIMARY KEY,
+    internal_code VARCHAR(50),
+    license_number VARCHAR(50),
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    professional_email VARCHAR(150),
+    join_date DATE,
+    is_active BOOLEAN
+);
+
+-- =====================================================
+-- TABLAS DEPENDIENTES DE PACIENTES
+-- =====================================================
+
+CREATE TABLE smart_health.patient_identity (
+    patient_id UUID REFERENCES smart_health.patient(patient_id),
+    document_type_id INT REFERENCES smart_health.document_type_catalog(document_type_id),
+    document_number VARCHAR(50),
+    issuing_country VARCHAR(50),
+    issue_date DATE
+);
+
+CREATE TABLE smart_health.patient_address (
+    patient_id UUID REFERENCES smart_health.patient(patient_id),
+    address_type VARCHAR(50),
+    department VARCHAR(100),
+    municipality VARCHAR(100),
+    address VARCHAR(255),
+    latitude FLOAT,
+    longitude FLOAT,
+    postal_code VARCHAR(20)
+);
+
+CREATE TABLE smart_health.patient_phone (
+    patient_id UUID REFERENCES smart_health.patient(patient_id),
+    phone_type VARCHAR(50),
+    number VARCHAR(20),
+    is_primary BOOLEAN
+);
+
+CREATE TABLE smart_health.patient_contact (
+    contact_id UUID PRIMARY KEY,
+    patient_id UUID REFERENCES smart_health.patient(patient_id),
+    name VARCHAR(100),
+    relationship VARCHAR(50),
+    phone VARCHAR(20),
+    email VARCHAR(150),
+    instructions TEXT
+);
+
+CREATE TABLE smart_health.policy (
+    policy_id UUID PRIMARY KEY,
+    patient_id UUID REFERENCES smart_health.patient(patient_id),
+    insurance_id INT REFERENCES smart_health.insurance(insurance_id),
+    policy_number VARCHAR(100),
+    coverage_summary TEXT,
+    start_date DATE,
+    end_date DATE,
+    status VARCHAR(50)
+);
+
+-- =====================================================
+-- TABLAS DEPENDIENTES DE DOCTOR
+-- =====================================================
+
+CREATE TABLE smart_health.doctor_specialty (
+    doctor_id UUID REFERENCES smart_health.doctor(doctor_id),
+    specialty_id INT REFERENCES smart_health.specialty_catalog(specialty_id)
+);
+
+CREATE TABLE smart_health.doctor_schedule (
+    doctor_id UUID REFERENCES smart_health.doctor(doctor_id),
+    day_of_week VARCHAR(20),
+    start_time TIME,
+    end_time TIME,
+    modality VARCHAR(50)
+);
+
+-- =====================================================
+-- TABLAS DE ATENCIÓN
+-- =====================================================
+
+CREATE TABLE smart_health.appointment (
+    appointment_id UUID PRIMARY KEY,
+    patient_id UUID REFERENCES smart_health.patient(patient_id),
+    doctor_id UUID REFERENCES smart_health.doctor(doctor_id),
+    appointment_date DATE,
+    start_time TIME,
+    end_time TIME,
+    type VARCHAR(50),
+    status VARCHAR(50),
+    room_id INT REFERENCES smart_health.room(room_id),
+    reason TEXT,
+    created_by UUID REFERENCES smart_health.user_account(user_id),
+    created_at TIMESTAMP
+);
+
+CREATE TABLE smart_health.medical_record (
+    record_id UUID PRIMARY KEY,
+    patient_id UUID REFERENCES smart_health.patient(patient_id),
+    record_timestamp TIMESTAMP,
+    record_type VARCHAR(50),
+    summary TEXT,
+    structured_data JSONB,
+    doctor_id UUID REFERENCES smart_health.doctor(doctor_id),
+    main_diagnosis_id INT REFERENCES smart_health.diagnosis_catalog(diagnosis_id)
+);
+
+CREATE TABLE smart_health.prescription (
+    prescription_id UUID PRIMARY KEY,
+    record_id UUID REFERENCES smart_health.medical_record(record_id),
+    medication_id INT REFERENCES smart_health.medication_catalog(medication_id),
+    dose VARCHAR(50),
+    frequency VARCHAR(50),
+    duration VARCHAR(50)
+);
+
+CREATE TABLE smart_health.vital_sign (
+    vital_sign_id UUID PRIMARY KEY,
+    record_id UUID REFERENCES smart_health.medical_record(record_id),
+    type VARCHAR(50),
+    value VARCHAR(50),
+    unit VARCHAR(20),
+    measured_at TIMESTAMP
+);
+
+-- =====================================================
+-- FIN DEL SCRIPT
+-- =====================================================
