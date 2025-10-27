@@ -78,5 +78,6 @@ content/fintech-accelator/data/sql/FK-Values/FK-FINTECH-ISSUERS.txt
 content/fintech-accelator/data/sql/SQL-Data/content/fintech-accelator/data/sql/SQL-Data.zip
 content/fintech-accelator/data/sql/SQL-Data.zip
 content/fintech-accelator/data/sql/SQL-Data
+content/smart-health/data/sql
 
 content/fintech-accelator/scripts/pipelines/create-fake-data/reproduce_transactions/
