@@ -1,0 +1,99 @@
+-- ========================
+-- COMENTARIOS DE CATÁLOGOS
+-- ========================
+
+COMMENT ON TABLE smart_health.document_type_catalog IS 'Catálogo de tipos de documento válidos (cédula, pasaporte, etc.)';
+COMMENT ON COLUMN smart_health.document_type_catalog.document_type_id IS 'Identificador del tipo de documento';
+COMMENT ON COLUMN smart_health.document_type_catalog.name IS 'Nombre del tipo de documento';
+
+COMMENT ON TABLE smart_health.specialty_catalog IS 'Catálogo de especialidades médicas disponibles';
+COMMENT ON COLUMN smart_health.specialty_catalog.specialty_id IS 'Identificador de la especialidad';
+COMMENT ON COLUMN smart_health.specialty_catalog.name IS 'Nombre de la especialidad';
+
+COMMENT ON TABLE smart_health.diagnosis_catalog IS 'Catálogo de diagnósticos médicos según clasificación CIE';
+COMMENT ON COLUMN smart_health.diagnosis_catalog.diagnosis_id IS 'ID único del diagnóstico';
+COMMENT ON COLUMN smart_health.diagnosis_catalog.cie_code IS 'Código CIE del diagnóstico';
+COMMENT ON COLUMN smart_health.diagnosis_catalog.description IS 'Descripción textual del diagnóstico';
+
+COMMENT ON TABLE smart_health.medication_catalog IS 'Catálogo de medicamentos registrados en el sistema';
+COMMENT ON COLUMN smart_health.medication_catalog.medication_id IS 'Identificador del medicamento';
+COMMENT ON COLUMN smart_health.medication_catalog.atc_code IS 'Código ATC del medicamento';
+COMMENT ON COLUMN smart_health.medication_catalog.trade_name IS 'Nombre comercial';
+COMMENT ON COLUMN smart_health.medication_catalog.active_ingredient IS 'Ingrediente activo principal';
+COMMENT ON COLUMN smart_health.medication_catalog.presentation IS 'Forma de presentación (tableta, jarabe, etc.)';
+
+COMMENT ON TABLE smart_health.insurance IS 'Entidades aseguradoras disponibles para afiliaciones de pacientes';
+COMMENT ON COLUMN smart_health.insurance.insurance_id IS 'ID de la entidad aseguradora';
+COMMENT ON COLUMN smart_health.insurance.name IS 'Nombre de la aseguradora';
+COMMENT ON COLUMN smart_health.insurance.contact_info IS 'Información de contacto de la aseguradora';
+
+COMMENT ON TABLE smart_health.room IS 'Salas de consulta o espacios físicos disponibles en la institución médica';
+COMMENT ON COLUMN smart_health.room.room_id IS 'Identificador único de la sala';
+COMMENT ON COLUMN smart_health.room.name IS 'Nombre asignado a la sala';
+COMMENT ON COLUMN smart_health.room.location IS 'Ubicación dentro de la institución';
+COMMENT ON COLUMN smart_health.room.capacity IS 'Capacidad máxima de personas en la sala';
+
+COMMENT ON TABLE smart_health.user_account IS 'Cuentas de usuario del sistema (personal administrativo o médico)';
+COMMENT ON COLUMN smart_health.user_account.user_id IS 'ID único de usuario';
+COMMENT ON COLUMN smart_health.user_account.username IS 'Nombre de usuario';
+COMMENT ON COLUMN smart_health.user_account.email IS 'Correo electrónico del usuario';
+COMMENT ON COLUMN smart_health.user_account.role IS 'Rol del usuario (admin, médico, recepcionista, etc.)';
+COMMENT ON COLUMN smart_health.user_account.mfa_enabled IS 'Indica si tiene autenticación de múltiples factores activa';
+
+-- ========================
+-- COMENTARIOS DE PACIENTES
+-- ========================
+
+COMMENT ON TABLE smart_health.patient IS 'Pacientes registrados en la institución de salud';
+COMMENT ON COLUMN smart_health.patient.patient_id IS 'Identificador único del paciente';
+COMMENT ON COLUMN smart_health.patient.first_name IS 'Primer nombre';
+COMMENT ON COLUMN smart_health.patient.middle_name IS 'Segundo nombre';
+COMMENT ON COLUMN smart_health.patient.last_name IS 'Primer apellido';
+COMMENT ON COLUMN smart_health.patient.second_last_name IS 'Segundo apellido';
+COMMENT ON COLUMN smart_health.patient.birth_date IS 'Fecha de nacimiento';
+COMMENT ON COLUMN smart_health.patient.gender IS 'Género del paciente';
+COMMENT ON COLUMN smart_health.patient.email IS 'Correo electrónico del paciente';
+COMMENT ON COLUMN smart_health.patient.registration_date IS 'Fecha de registro en el sistema';
+COMMENT ON COLUMN smart_health.patient.is_active IS 'Indica si el paciente está activo';
+
+COMMENT ON TABLE smart_health.patient_identity IS 'Documentos de identidad asociados a pacientes';
+COMMENT ON COLUMN smart_health.patient_identity.patient_id IS 'ID del paciente';
+COMMENT ON COLUMN smart_health.patient_identity.document_type_id IS 'Tipo de documento';
+COMMENT ON COLUMN smart_health.patient_identity.document_number IS 'Número de documento';
+COMMENT ON COLUMN smart_health.patient_identity.issuing_country IS 'País que expidió el documento';
+COMMENT ON COLUMN smart_health.patient_identity.issue_date IS 'Fecha de expedición del documento';
+
+COMMENT ON TABLE smart_health.patient_address IS 'Direcciones residenciales o de contacto del paciente';
+COMMENT ON COLUMN smart_health.patient_address.patient_id IS 'ID del paciente';
+COMMENT ON COLUMN smart_health.patient_address.address_type IS 'Tipo de dirección (residencial, laboral, etc.)';
+COMMENT ON COLUMN smart_health.patient_address.department IS 'Departamento';
+COMMENT ON COLUMN smart_health.patient_address.municipality IS 'Municipio';
+COMMENT ON COLUMN smart_health.patient_address.address IS 'Dirección detallada';
+COMMENT ON COLUMN smart_health.patient_address.latitude IS 'Latitud geográfica';
+COMMENT ON COLUMN smart_health.patient_address.longitude IS 'Longitud geográfica';
+COMMENT ON COLUMN smart_health.patient_address.postal_code IS 'Código postal';
+
+COMMENT ON TABLE smart_health.patient_phone IS 'Teléfonos de contacto del paciente';
+COMMENT ON COLUMN smart_health.patient_phone.patient_id IS 'ID del paciente';
+COMMENT ON COLUMN smart_health.patient_phone.phone_type IS 'Tipo de teléfono (móvil, fijo, etc.)';
+COMMENT ON COLUMN smart_health.patient_phone.number IS 'Número telefónico';
+COMMENT ON COLUMN smart_health.patient_phone.is_primary IS 'Indica si es el teléfono principal';
+
+COMMENT ON TABLE smart_health.patient_contact IS 'Contactos de emergencia o responsables del paciente';
+COMMENT ON COLUMN smart_health.patient_contact.contact_id IS 'ID del contacto';
+COMMENT ON COLUMN smart_health.patient_contact.patient_id IS 'ID del paciente';
+COMMENT ON COLUMN smart_health.patient_contact.name IS 'Nombre del contacto';
+COMMENT ON COLUMN smart_health.patient_contact.relationship IS 'Relación con el paciente';
+COMMENT ON COLUMN smart_health.patient_contact.phone IS 'Teléfono del contacto';
+COMMENT ON COLUMN smart_health.patient_contact.email IS 'Correo electrónico del contacto';
+COMMENT ON COLUMN smart_health.patient_contact.instructions IS 'Instrucciones especiales en caso de emergencia';
+
+COMMENT ON TABLE smart_health.policy IS 'Pólizas de seguro asociadas a pacientes';
+COMMENT ON COLUMN smart_health.policy.policy_id IS 'ID de la póliza';
+COMMENT ON COLUMN smart_health.policy.patient_id IS 'ID del paciente afiliado';
+COMMENT ON COLUMN smart_health.policy.insurance_id IS 'Entidad aseguradora';
+COMMENT ON COLUMN smart_health.policy.policy_number IS 'Número de la póliza';
+COMMENT ON COLUMN smart_health.policy.coverage_summary IS 'Resumen de la cobertura';
+COMMENT ON COLUMN smart_health.policy.start_date IS 'Fecha de inicio de la cobertura';
+COMMENT ON COLUMN smart_health.policy.end_date IS 'Fecha de finalización de la cobertura';
+COMMENT ON COLUMN smart_health.policy.status IS 'Estado de la póliza (activa, vencida, etc.)';
